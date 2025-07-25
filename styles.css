@@ -1,0 +1,79 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #f8f9fa;
+}
+
+.section {
+  display: none;
+}
+
+.section.active {
+  display: block;
+}
+
+.card {
+  border: none;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  border-radius: 10px;
+}
+
+.btn {
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.navbar-brand {
+  font-weight: 600;
+}
+
+/* Quiz specific styles */
+#quiz .card-body {
+  padding: 2rem;
+}
+
+#answers-grid button {
+  width: 100%;
+  text-align: left;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.progress {
+  height: 8px;
+}
+
+.badge {
+  font-size: 0.9rem;
+}
+
+/* Table styles */
+.table-responsive {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.table th {
+  background-color: #f8f9fa;
+  border-top: none;
+  font-weight: 600;
+}
+
+/* Chart container */
+canvas {
+  max-height: 300px;
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+
+  #answers-grid button {
+    padding: 0.75rem;
+  }
+
+  .card-body {
+    padding: 1rem;
+  }
+}

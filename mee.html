@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🧠 Ultimate Trivia Challenge</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+      <a class="navbar-brand" href="#"><i class="fas fa-brain"></i> Trivia Challenge</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('quiz-section')">Quiz</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('dashboard-section')">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('manage-section')">Manage</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mt-4">
+    <!-- Quiz Section -->
+    <div id="quiz-section" class="section active">
+
+      <!-- Stats Cards -->
+      <div class="row mb-4">
+        <div class="col-md-4">
+          <div class="card text-center">
+            <div class="card-body">
+              <h5><i class="fas fa-trophy"></i> High Score</h5>
+              <h3 id="high-score-display">0</h3>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card text-center">
+            <div class="card-body">
+              <h5><i class="fas fa-fire"></i> Streak</h5>
+              <h3 id="streak-display">0</h3>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card text-center">
+            <div class="card-body">
+              <h5><i class="fas fa-star"></i> Total Points</h5>
+              <h3 id="total-points-display">0</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quiz Settings -->
+      <div id="settings" class="card">
+        <div class="card-body">
+          <h5><i class="fas fa-cog"></i> Quiz Settings</h5>
+          <div class="row g-3">
+            <div class="col-md-4">
+              <select id="category" class="form-select">
+                <option value="">Any Category</option>
+                <option value="9">General Knowledge</option>
+                <option value="21">Sports</option>
+                <option value="23">History</option>
+                <option value="17">Science & Nature</option>
+                <option value="22">Geography</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <select id="difficulty" class="form-select">
+                <option value="">Any Difficulty</option>
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <input id="amount" type="number" min="1" max="20" class="form-control" value="5">
+            </div>
+          </div>
+          <div class="text-center mt-3">
+            <button class="btn btn-primary" onclick="startQuiz()">Start Quiz</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quiz Area -->
+      <div id="quiz" class="card mt-4" style="display:none">
+        <div class="card-body">
+          <div class="progress mb-3">
+            <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
+          </div>
+
+          <div class="text-center mb-3">
+            <span class="badge bg-primary">Question <span id="current-q">1</span> of <span id="total-q">5</span></span>
+            <span class="badge bg-secondary ms-2">Time: <span id="timer-text">30</span>s</span>
+          </div>
+
+          <div class="card mb-3">
+            <div class="card-body">
+              <h5 id="question-text"></h5>
+            </div>
+          </div>
+
+          <div id="answers-grid" class="d-grid gap-2"></div>
+
+          <div class="text-center mt-3">
+            <button class="btn btn-warning" onclick="skipQuestion()">Skip</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Result -->
+      <div id="result" class="card mt-4" style="display:none">
+        <div class="card-body text-center">
+          <h2 id="result-title">Quiz Completed!</h2>
+          <p id="result-score"></p>
+
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <div class="card">
+                <div class="card-body">
+                  <h6>Accuracy</h6>
+                  <h4 id="accuracy-display">0%</h4>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card">
+                <div class="card-body">
+                  <h6>Avg Time</h6>
+                  <h4 id="avg-time-display">0s</h4>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card">
+                <div class="card-body">
+                  <h6>Points</h6>
+                  <h4 id="points-earned">0</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex gap-2 justify-content-center">
+            <button class="btn btn-primary" onclick="restartQuiz()">Try Again</button>
+            <button class="btn btn-success" onclick="newQuiz()">New Quiz</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dashboard Section -->
+    <div id="dashboard-section" class="section" style="display:none">
+      <h2>Dashboard</h2>
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <h5>Performance Chart</h5>
+              <canvas id="performanceChart"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body">
+              <h5>Category Performance</h5>
+              <canvas id="categoryChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <h5>Quiz History</h5>
+          <div class="table-responsive">
+            <table class="table" id="historyTable">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Category</th>
+                  <th>Score</th>
+                  <th>Accuracy</th>
+                  <th>Points</th>
+                </tr>
+              </thead>
+              <tbody id="historyTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Manage Section -->
+    <div id="manage-section" class="section" style="display:none">
+      <h2>Manage Questions</h2>
+
+      <div class="card mb-4">
+        <div class="card-body">
+          <h5>Add Custom Question</h5>
+          <form id="questionForm">
+            <div class="mb-3">
+              <input type="text" class="form-control" id="questionInput" placeholder="Question" required>
+            </div>
+            <div class="mb-3">
+              <input type="text" class="form-control" id="correctAnswer" placeholder="Correct Answer" required>
+            </div>
+            <div class="mb-3">
+              <input type="text" class="form-control" id="wrongAnswer1" placeholder="Wrong Answer 1" required>
+            </div>
+            <div class="mb-3">
+              <input type="text" class="form-control" id="wrongAnswer2" placeholder="Wrong Answer 2" required>
+            </div>
+            <div class="mb-3">
+              <input type="text" class="form-control" id="wrongAnswer3" placeholder="Wrong Answer 3" required>
+            </div>
+            <div class="mb-3">
+              <select class="form-select" id="questionCategory">
+                <option value="custom">Custom</option>
+                <option value="general">General Knowledge</option>
+                <option value="science">Science</option>
+                <option value="history">History</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Question</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <h5>Custom Questions</h5>
+          <div class="table-responsive">
+            <table class="table" id="questionsTable">
+              <thead>
+                <tr>
+                  <th>Question</th>
+                  <th>Category</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="questionsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
+
+
