@@ -1,270 +1,279 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>🧠 Ultimate Trivia Challenge</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link href="styles.css" rel="stylesheet">
+<meta charset="UTF-8">
+<title>🧠 Ultimate Trivia Challenge</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+:root{--primary-gradient:linear-gradient(135deg,#667eea 0%,#764ba2 100%);--card-shadow:0 8px 25px rgba(0,0,0,0.1);--transition:all 0.3s ease}
+body{font-family:Arial,sans-serif;background:var(--primary-gradient);min-height:100vh}
+.container{background:rgba(255,255,255,0.98);border-radius:15px;box-shadow:var(--card-shadow);margin-top:10px;padding:20px}
+.section{display:none}.section.active{display:block}
+.navbar{background:rgba(255,255,255,0.95)!important;backdrop-filter:blur(20px)}
+.navbar-brand{font-weight:700;color:#333!important}.navbar-brand i{color:#667eea;margin-right:8px}
+.nav-link{color:#333!important;font-weight:500}.nav-link:hover{color:#667eea!important}
+.card{border:none;box-shadow:var(--card-shadow);border-radius:15px;transition:var(--transition)}
+.card:hover{transform:translateY(-2px)}
+.btn{border-radius:25px;font-weight:500;transition:var(--transition)}
+.btn-primary{background:var(--primary-gradient);border:none;color:white}
+.btn-primary:hover{transform:translateY(-2px)}
+.btn-outline-primary{border:2px solid #667eea;color:#667eea}
+.btn-outline-primary:hover{background:var(--primary-gradient);color:white}
+.btn-outline-primary.correct{background:#28a745;border-color:#28a745;color:white}
+.btn-outline-primary.incorrect{background:#dc3545;border-color:#dc3545;color:white}
+.form-control,.form-select{border-radius:10px;transition:var(--transition)}
+.form-control:focus,.form-select:focus{border-color:#667eea;box-shadow:0 0 0 0.2rem rgba(102,126,234,0.25)}
+.progress{height:10px;border-radius:10px}.progress-bar{background:var(--primary-gradient);border-radius:10px}
+.badge{font-size:0.9rem;padding:8px 12px;border-radius:20px}
+.badge.bg-secondary,.badge.bg-primary{background-color:#90EE90!important;color:#333!important}
+.quiz-container,.manage-container{max-width:66.67%;margin:0 auto}
+.table th{background:var(--primary-gradient);color:white;border:none}
+.table tbody tr:hover{background:rgba(102,126,234,0.05)}
+@media (max-width:768px){.quiz-container,.manage-container{max-width:100%}}
+</style>
 </head>
 <body>
-  <!-- Navigation -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <div class="container">
-      <a class="navbar-brand" href="#"><i class="fas fa-brain"></i> Trivia Challenge</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('quiz-section')">Quiz</a></li>
-          <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('dashboard-section')">Dashboard</a></li>
-          <li class="nav-item"><a class="nav-link" href="#" onclick="showSection('manage-section')">Manage</a></li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+<nav class="navbar navbar-expand-lg">
+<div class="container">
+<a class="navbar-brand" href="#"><i class="fas fa-brain"></i> Trivia Challenge</a>
+<div class="navbar-nav ms-auto">
+<a class="nav-link" href="#" onclick="showSection('quiz-section')">Quiz</a>
+<a class="nav-link" href="#" onclick="showSection('dashboard-section')">Dashboard</a>
+<a class="nav-link" href="#" onclick="showSection('manage-section')">Manage</a>
+</div>
+</div>
+</nav>
 
-  <div class="container mt-4">
-    <!-- Quiz Section -->
-    <div id="quiz-section" class="section active">
+<div class="container mt-2">
+<div id="quiz-section" class="section active">
+<div class="quiz-container">
+<div class="row mb-2">
+<div class="col-4">
+<div class="card text-center">
+<div class="card-body p-2">
+<small><i class="fas fa-trophy"></i> High Score</small>
+<h6 id="high-score-display" class="mb-0">0</h6>
+</div>
+</div>
+</div>
+<div class="col-4">
+<div class="card text-center">
+<div class="card-body p-2">
+<small><i class="fas fa-fire"></i> Streak</small>
+<h6 id="streak-display" class="mb-0">0</h6>
+</div>
+</div>
+</div>
+<div class="col-4">
+<div class="card text-center">
+<div class="card-body p-2">
+<small><i class="fas fa-star"></i> Points</small>
+<h6 id="total-points-display" class="mb-0">0</h6>
+</div>
+</div>
+</div>
+</div>
 
-      <!-- Stats Cards -->
-      <div class="row mb-4">
-        <div class="col-md-4">
-          <div class="card text-center">
-            <div class="card-body">
-              <h5><i class="fas fa-trophy"></i> High Score</h5>
-              <h3 id="high-score-display">0</h3>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="card text-center">
-            <div class="card-body">
-              <h5><i class="fas fa-fire"></i> Streak</h5>
-              <h3 id="streak-display">0</h3>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="card text-center">
-            <div class="card-body">
-              <h5><i class="fas fa-star"></i> Total Points</h5>
-              <h3 id="total-points-display">0</h3>
-            </div>
-          </div>
-        </div>
-      </div>
+<div id="settings" class="card">
+<div class="card-body p-3">
+<h6><i class="fas fa-cog"></i> Quiz Settings</h6>
+<div class="row g-2">
+<div class="col-md-3">
+<select id="category" class="form-select form-select-sm">
+<option value="">Any Category</option>
+<option value="9">General Knowledge</option>
+<option value="21">Sports</option>
+<option value="23">History</option>
+<option value="17">Science & Nature</option>
+<option value="22">Geography</option>
+</select>
+</div>
+<div class="col-md-3">
+<select id="difficulty" class="form-select form-select-sm">
+<option value="">Any Difficulty</option>
+<option value="easy">Easy</option>
+<option value="medium">Medium</option>
+<option value="hard">Hard</option>
+</select>
+</div>
+<div class="col-md-3">
+<input id="amount" type="number" min="1" max="20" class="form-control form-control-sm" value="5" placeholder="Questions">
+</div>
+<div class="col-md-3">
+<button class="btn btn-primary btn-sm w-100" onclick="startQuiz()">Start Quiz</button>
+</div>
+</div>
+</div>
+</div>
 
-      <!-- Quiz Settings -->
-      <div id="settings" class="card">
-        <div class="card-body">
-          <h5><i class="fas fa-cog"></i> Quiz Settings</h5>
-          <div class="row g-3">
-            <div class="col-md-4">
-              <select id="category" class="form-select">
-                <option value="">Any Category</option>
-                <option value="9">General Knowledge</option>
-                <option value="21">Sports</option>
-                <option value="23">History</option>
-                <option value="17">Science & Nature</option>
-                <option value="22">Geography</option>
-              </select>
-            </div>
-            <div class="col-md-4">
-              <select id="difficulty" class="form-select">
-                <option value="">Any Difficulty</option>
-                <option value="easy">Easy</option>
-                <option value="medium">Medium</option>
-                <option value="hard">Hard</option>
-              </select>
-            </div>
-            <div class="col-md-4">
-              <input id="amount" type="number" min="1" max="20" class="form-control" value="5">
-            </div>
-          </div>
-          <div class="text-center mt-3">
-            <button class="btn btn-primary" onclick="startQuiz()">Start Quiz</button>
-          </div>
-        </div>
-      </div>
+<div id="quiz" class="card mt-2" style="display:none">
+<div class="card-body p-3">
+<div class="progress mb-2">
+<div class="progress-bar" id="progress-bar" style="width:0%"></div>
+</div>
+<div class="d-flex justify-content-between align-items-center mb-2">
+<span class="badge bg-primary">Q <span id="current-q">1</span>/<span id="total-q">5</span></span>
+<span class="badge bg-secondary">⏱️ <span id="timer-text">30</span>s</span>
+</div>
+<div class="card mb-2">
+<div class="card-body p-3">
+<h6 id="question-text" class="mb-0"></h6>
+</div>
+</div>
+<div id="answers-grid" class="d-grid gap-2 mb-2"></div>
+<div class="text-center">
+<button class="btn btn-warning btn-sm" onclick="skipQuestion()">Skip</button>
+</div>
+</div>
+</div>
 
-      <!-- Quiz Area -->
-      <div id="quiz" class="card mt-4" style="display:none">
-        <div class="card-body">
-          <div class="progress mb-3">
-            <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
-          </div>
+<div id="result" class="card mt-3" style="display:none">
+<div class="card-body text-center p-3">
+<h5 id="result-title">Quiz Completed!</h5>
+<p id="result-score" class="mb-2"></p>
+<div class="row mb-2">
+<div class="col-4">
+<div class="card">
+<div class="card-body p-2">
+<small>Accuracy</small>
+<h6 id="accuracy-display" class="mb-0">0%</h6>
+</div>
+</div>
+</div>
+<div class="col-4">
+<div class="card">
+<div class="card-body p-2">
+<small>Avg Time</small>
+<h6 id="avg-time-display" class="mb-0">0s</h6>
+</div>
+</div>
+</div>
+<div class="col-4">
+<div class="card">
+<div class="card-body p-2">
+<small>Points</small>
+<h6 id="points-earned" class="mb-0">0</h6>
+</div>
+</div>
+</div>
+</div>
+<div class="d-flex gap-2 justify-content-center">
+<button class="btn btn-primary btn-sm" onclick="restartQuiz()">Try Again</button>
+<button class="btn btn-success btn-sm" onclick="newQuiz()">New Quiz</button>
+</div>
+</div>
+</div>
+</div>
+</div>
 
-          <div class="text-center mb-3">
-            <span class="badge bg-primary">Question <span id="current-q">1</span> of <span id="total-q">5</span></span>
-            <span class="badge bg-secondary ms-2">Time: <span id="timer-text">30</span>s</span>
-          </div>
+<div id="dashboard-section" class="section">
+<h2>Dashboard</h2>
+<div class="row mb-4">
+<div class="col-md-6">
+<div class="card">
+<div class="card-body">
+<h5>Performance Chart</h5>
+<canvas id="performanceChart"></canvas>
+</div>
+</div>
+</div>
+<div class="col-md-6">
+<div class="card">
+<div class="card-body">
+<h5>Category Performance</h5>
+<canvas id="categoryChart"></canvas>
+</div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-body">
+<h5>Quiz History</h5>
+<div class="table-responsive">
+<table class="table">
+<thead>
+<tr><th>Date</th><th>Category</th><th>Score</th><th>Accuracy</th><th>Points</th></tr>
+</thead>
+<tbody id="historyTableBody"></tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
 
-          <div class="card mb-3">
-            <div class="card-body">
-              <h5 id="question-text"></h5>
-            </div>
-          </div>
-
-          <div id="answers-grid" class="d-grid gap-2"></div>
-
-          <div class="text-center mt-3">
-            <button class="btn btn-warning" onclick="skipQuestion()">Skip</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Result -->
-      <div id="result" class="card mt-4" style="display:none">
-        <div class="card-body text-center">
-          <h2 id="result-title">Quiz Completed!</h2>
-          <p id="result-score"></p>
-
-          <div class="row mb-3">
-            <div class="col-md-4">
-              <div class="card">
-                <div class="card-body">
-                  <h6>Accuracy</h6>
-                  <h4 id="accuracy-display">0%</h4>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="card">
-                <div class="card-body">
-                  <h6>Avg Time</h6>
-                  <h4 id="avg-time-display">0s</h4>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="card">
-                <div class="card-body">
-                  <h6>Points</h6>
-                  <h4 id="points-earned">0</h4>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="d-flex gap-2 justify-content-center">
-            <button class="btn btn-primary" onclick="restartQuiz()">Try Again</button>
-            <button class="btn btn-success" onclick="newQuiz()">New Quiz</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Dashboard Section -->
-    <div id="dashboard-section" class="section" style="display:none">
-      <h2>Dashboard</h2>
-      <div class="row mb-4">
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-body">
-              <h5>Performance Chart</h5>
-              <canvas id="performanceChart"></canvas>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-body">
-              <h5>Category Performance</h5>
-              <canvas id="categoryChart"></canvas>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-body">
-          <h5>Quiz History</h5>
-          <div class="table-responsive">
-            <table class="table" id="historyTable">
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Category</th>
-                  <th>Score</th>
-                  <th>Accuracy</th>
-                  <th>Points</th>
-                </tr>
-              </thead>
-              <tbody id="historyTableBody"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Manage Section -->
-    <div id="manage-section" class="section" style="display:none">
-      <h2>Manage Questions</h2>
-
-      <div class="card mb-4">
-        <div class="card-body">
-          <h5>Add Custom Question</h5>
-          <form id="questionForm">
-            <div class="mb-3">
-              <input type="text" class="form-control" id="questionInput" placeholder="Question" required>
-            </div>
-            <div class="mb-3">
-              <input type="text" class="form-control" id="correctAnswer" placeholder="Correct Answer" required>
-            </div>
-            <div class="mb-3">
-              <input type="text" class="form-control" id="wrongAnswer1" placeholder="Wrong Answer 1" required>
-            </div>
-            <div class="mb-3">
-              <input type="text" class="form-control" id="wrongAnswer2" placeholder="Wrong Answer 2" required>
-            </div>
-            <div class="mb-3">
-              <input type="text" class="form-control" id="wrongAnswer3" placeholder="Wrong Answer 3" required>
-            </div>
-            <div class="mb-3">
-              <select class="form-select" id="questionCategory">
-                <option value="custom">Custom</option>
-                <option value="general">General Knowledge</option>
-                <option value="science">Science</option>
-                <option value="history">History</option>
-              </select>
-            </div>
-            <button type="submit" class="btn btn-primary">Add Question</button>
-          </form>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-body">
-          <h5>Custom Questions</h5>
-          <div class="table-responsive">
-            <table class="table" id="questionsTable">
-              <thead>
-                <tr>
-                  <th>Question</th>
-                  <th>Category</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="questionsTableBody"></tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="js/storage.js"></script>
-  <script src="js/api.js"></script>
-  <script src="js/dashboard.js"></script>
-  <script src="js/app.js"></script>
+<div id="manage-section" class="section">
+<div class="manage-container">
+<h2>Manage Questions</h2>
+<div class="card mb-4">
+<div class="card-body">
+<h5>Add Custom Question</h5>
+<form id="questionForm">
+<div class="mb-3">
+<input type="text" class="form-control" id="questionInput" placeholder="Question" required>
+</div>
+<div class="mb-3">
+<input type="text" class="form-control" id="correctAnswer" placeholder="Correct Answer" required>
+</div>
+<div class="mb-3">
+<input type="text" class="form-control" id="wrongAnswer1" placeholder="Wrong Answer 1" required>
+</div>
+<div class="mb-3">
+<input type="text" class="form-control" id="wrongAnswer2" placeholder="Wrong Answer 2" required>
+</div>
+<div class="mb-3">
+<input type="text" class="form-control" id="wrongAnswer3" placeholder="Wrong Answer 3" required>
+</div>
+<div class="mb-3">
+<select class="form-select" id="questionCategory">
+<option value="custom">Custom</option>
+<option value="general">General Knowledge</option>
+<option value="science">Science</option>
+<option value="history">History</option>
+</select>
+</div>
+<button type="submit" class="btn btn-primary">Add Question</button>
+</form>
+</div>
+</div>
+<div class="card">
+<div class="card-body">
+<h5>Custom Questions</h5>
+<div class="table-responsive">
+<table class="table">
+<thead>
+<tr><th>Question</th><th>Category</th><th>Actions</th></tr>
+</thead>
+<tbody id="questionsTableBody"></tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+class StorageManager{constructor(){this.keys={QUIZ_HISTORY:'trivia_quiz_history',CUSTOM_QUESTIONS:'trivia_custom_questions',STATS:'trivia_stats'}}get(key){try{const item=localStorage.getItem(key);return item?JSON.parse(item):null}catch{return null}}set(key,value){try{localStorage.setItem(key,JSON.stringify(value));return true}catch{return false}}getQuizHistory(){return this.get(this.keys.QUIZ_HISTORY)||[]}addQuizResult(result){const history=this.getQuizHistory();const newResult={...result,id:Date.now(),date:new Date().toISOString()};history.unshift(newResult);if(history.length>100)history.splice(100);this.set(this.keys.QUIZ_HISTORY,history);return newResult}getCustomQuestions(){return this.get(this.keys.CUSTOM_QUESTIONS)||[]}addCustomQuestion(question){const questions=this.getCustomQuestions();const newQuestion={...question,id:Date.now(),created:new Date().toISOString()};questions.push(newQuestion);this.set(this.keys.CUSTOM_QUESTIONS,questions);return newQuestion}deleteCustomQuestion(id){const questions=this.getCustomQuestions();const filtered=questions.filter(q=>q.id!==id);this.set(this.keys.CUSTOM_QUESTIONS,filtered);return filtered}getStats(){return this.get(this.keys.STATS)||{totalQuizzes:0,highScore:0,totalPoints:0,maxStreak:0}}saveStats(score,points,streak){const stats=this.getStats();stats.totalQuizzes+=1;stats.totalPoints+=points;if(score>stats.highScore)stats.highScore=score;if(streak>stats.maxStreak)stats.maxStreak=streak;this.set(this.keys.STATS,stats);return stats}}
+class APIManager{constructor(){this.baseURL='https://opentdb.com/api.php'}async fetchQuestions(params){try{const url=this.buildURL(params);const response=await fetch(url);if(!response.ok)throw new Error('Network error');const data=await response.json();if(data.response_code===0)return data.results;throw new Error('API error')}catch{const customQuestions=storage.getCustomQuestions();if(customQuestions.length>0)return this.formatCustomQuestions(customQuestions,params.amount||5);return this.getDefaultQuestions(params.amount||5)}}buildURL(params){let url=`${this.baseURL}?amount=${params.amount||5}&type=multiple`;if(params.category)url+=`&category=${params.category}`;if(params.difficulty)url+=`&difficulty=${params.difficulty}`;return url}formatCustomQuestions(questions,amount){return questions.sort(()=>0.5-Math.random()).slice(0,amount).map(q=>({question:q.question,correct_answer:q.correctAnswer,incorrect_answers:[q.wrongAnswer1,q.wrongAnswer2,q.wrongAnswer3],category:q.category,difficulty:'medium'}))}getDefaultQuestions(amount){const defaultQuestions=[{question:"What is the capital of France?",correct_answer:"Paris",incorrect_answers:["London","Berlin","Madrid"],category:"Geography",difficulty:"easy"},{question:"What is 2 + 2?",correct_answer:"4",incorrect_answers:["3","5","6"],category:"Mathematics",difficulty:"easy"},{question:"Who painted the Mona Lisa?",correct_answer:"Leonardo da Vinci",incorrect_answers:["Pablo Picasso","Vincent van Gogh","Michelangelo"],category:"Art",difficulty:"medium"}];return defaultQuestions.slice(0,amount)}}
+class DashboardManager{constructor(){this.charts={}}init(){this.createPerformanceChart();this.createCategoryChart();this.updateHistoryTable()}createPerformanceChart(){const ctx=document.getElementById('performanceChart');if(!ctx)return;const history=storage.getQuizHistory();const last10=history.slice(0,10).reverse();const data={labels:last10.map((_,index)=>`Quiz ${index+1}`),datasets:[{label:'Score %',data:last10.map(quiz=>quiz.accuracy||0),borderColor:'rgb(75, 192, 192)',backgroundColor:'rgba(75, 192, 192, 0.2)',tension:0.1}]};this.charts.performance=new Chart(ctx,{type:'line',data:data,options:{responsive:true,scales:{y:{beginAtZero:true,max:100}}}})}createCategoryChart(){const ctx=document.getElementById('categoryChart');if(!ctx)return;const history=storage.getQuizHistory();const categoryStats={};history.forEach(quiz=>{const category=quiz.category||'Unknown';if(!categoryStats[category])categoryStats[category]={total:0,correct:0};categoryStats[category].total+=quiz.totalQuestions||0;categoryStats[category].correct+=quiz.score||0});const categories=Object.keys(categoryStats);const accuracies=categories.map(cat=>categoryStats[cat].total>0?Math.round((categoryStats[cat].correct/categoryStats[cat].total)*100):0);const data={labels:categories,datasets:[{data:accuracies,backgroundColor:['#FF6384','#36A2EB','#FFCE56','#4BC0C0','#9966FF','#FF9F40']}]};this.charts.category=new Chart(ctx,{type:'doughnut',data:data,options:{responsive:true,maintainAspectRatio:true,aspectRatio:2}})}updateHistoryTable(){const tbody=document.getElementById('historyTableBody');if(!tbody)return;const history=storage.getQuizHistory();tbody.innerHTML='';if(history.length===0){tbody.innerHTML='<tr><td colspan="5" class="text-center">No quiz history yet</td></tr>';return}history.forEach(quiz=>{const row=document.createElement('tr');row.innerHTML=`<td>${new Date(quiz.date).toLocaleDateString()}</td><td>${quiz.category||'Mixed'}</td><td>${quiz.score}/${quiz.totalQuestions}</td><td>${quiz.accuracy}%</td><td>${quiz.points}</td>`;tbody.appendChild(row)})}}
+class QuestionManager{constructor(){this.setupEventListeners()}setupEventListeners(){const form=document.getElementById('questionForm');if(form)form.addEventListener('submit',e=>{e.preventDefault();this.addQuestion()})}addQuestion(){const question=document.getElementById('questionInput').value.trim();const correctAnswer=document.getElementById('correctAnswer').value.trim();const wrongAnswer1=document.getElementById('wrongAnswer1').value.trim();const wrongAnswer2=document.getElementById('wrongAnswer2').value.trim();const wrongAnswer3=document.getElementById('wrongAnswer3').value.trim();const category=document.getElementById('questionCategory').value;if(!question||!correctAnswer||!wrongAnswer1||!wrongAnswer2||!wrongAnswer3){showAlert('Please fill in all fields','error');return}storage.addCustomQuestion({question,correctAnswer,wrongAnswer1,wrongAnswer2,wrongAnswer3,category});this.updateQuestionsTable();document.getElementById('questionForm').reset();showAlert('Question added successfully!','success')}updateQuestionsTable(){const tbody=document.getElementById('questionsTableBody');if(!tbody)return;const questions=storage.getCustomQuestions();tbody.innerHTML='';if(questions.length===0){tbody.innerHTML='<tr><td colspan="3" class="text-center">No custom questions yet</td></tr>';return}questions.forEach(question=>{const row=document.createElement('tr');row.innerHTML=`<td>${question.question}</td><td><span class="badge bg-secondary">${question.category}</span></td><td><button class="btn btn-sm btn-danger" onclick="questionManager.deleteQuestion(${question.id})">Delete</button></td>`;tbody.appendChild(row)})}deleteQuestion(id){if(confirm('Are you sure you want to delete this question?')){storage.deleteCustomQuestion(id);this.updateQuestionsTable();showAlert('Question deleted successfully!','success')}}}
+class QuizApp{constructor(){this.quizData=[];this.currentQuestion=0;this.score=0;this.timeLeft=30;this.timerInterval=null;this.questionStartTime=0;this.totalTimeSpent=0;this.correctAnswers=0;this.streak=0;this.maxStreak=0;this.questionTimes=[];this.isAnswered=false;this.currentSection='quiz-section'}init(){this.loadStats();this.showSection('quiz-section')}loadStats(){const stats=storage.getStats();document.getElementById('high-score-display').textContent=stats.highScore;document.getElementById('total-points-display').textContent=stats.totalPoints;document.getElementById('streak-display').textContent=stats.maxStreak}showSection(sectionId){document.querySelectorAll('.section').forEach(section=>{section.style.display='none'});const targetSection=document.getElementById(sectionId);if(targetSection){targetSection.style.display='block';this.currentSection=sectionId;if(sectionId==='dashboard-section'){dashboard.init()}else if(sectionId==='manage-section'){questionManager.updateQuestionsTable()}}}async startQuiz(){const category=document.getElementById("category").value;const difficulty=document.getElementById("difficulty").value;const amount=parseInt(document.getElementById("amount").value)||5;this.resetGameState();try{this.quizData=await api.fetchQuestions({category,difficulty,amount});document.getElementById("settings").style.display="none";document.getElementById("quiz").style.display="block";document.getElementById("total-q").textContent=this.quizData.length;this.showQuestion()}catch(error){showAlert("Error starting quiz. Please try again.","error")}}resetGameState(){this.currentQuestion=0;this.score=0;this.correctAnswers=0;this.streak=0;this.maxStreak=0;this.totalTimeSpent=0;this.questionTimes=[];this.isAnswered=false}showQuestion(){const questionObj=this.quizData[this.currentQuestion];const questionText=document.getElementById("question-text");const answersGrid=document.getElementById("answers-grid");const currentQ=document.getElementById("current-q");const progressBar=document.getElementById("progress-bar");currentQ.textContent=this.currentQuestion+1;const progressPercentage=((this.currentQuestion+1)/this.quizData.length)*100;progressBar.style.width=progressPercentage+'%';questionText.textContent=decodeHTML(questionObj.question);const correct=decodeHTML(questionObj.correct_answer);const incorrect=questionObj.incorrect_answers.map(ans=>decodeHTML(ans));const allAnswers=[...incorrect,correct].sort(()=>Math.random()-0.5);answersGrid.innerHTML="";allAnswers.forEach(answer=>{const btn=document.createElement("button");btn.className="btn btn-outline-primary mb-2";btn.textContent=answer;btn.onclick=()=>this.selectAnswer(answer,correct,btn);answersGrid.appendChild(btn)});this.startTimer()}startTimer(){this.timeLeft=30;this.questionStartTime=Date.now();this.isAnswered=false;this.updateTimerDisplay();this.timerInterval=setInterval(()=>{this.timeLeft--;this.updateTimerDisplay();if(this.timeLeft<=0){clearInterval(this.timerInterval);if(!this.isAnswered){this.timeUp()}}},1000)}updateTimerDisplay(){document.getElementById('timer-text').textContent=this.timeLeft}timeUp(){this.isAnswered=true;this.streak=0;const correctAnswer=decodeHTML(this.quizData[this.currentQuestion].correct_answer);showAlert(`⏰ Time's up! Correct answer: ${correctAnswer}`,"warning");setTimeout(()=>{this.nextQuestion()},2000)}selectAnswer(selectedAnswer,correctAnswer,selectedBtn){if(this.isAnswered)return;this.isAnswered=true;clearInterval(this.timerInterval);const timeTaken=(Date.now()-this.questionStartTime)/1000;this.questionTimes.push(timeTaken);this.totalTimeSpent+=timeTaken;const buttons=document.querySelectorAll('#answers-grid button');buttons.forEach(btn=>btn.disabled=true);if(selectedAnswer===correctAnswer){selectedBtn.classList.remove('btn-outline-primary');selectedBtn.classList.add('btn-success');this.score++;this.correctAnswers++;this.streak++;this.maxStreak=Math.max(this.maxStreak,this.streak);showAlert("✅ Correct!","success")}else{selectedBtn.classList.remove('btn-outline-primary');selectedBtn.classList.add('btn-danger');this.streak=0;buttons.forEach(btn=>{if(btn.textContent===correctAnswer){btn.classList.remove('btn-outline-primary');btn.classList.add('btn-success')}});showAlert(`❌ Wrong! Correct: ${correctAnswer}`,"error")}document.getElementById('streak-display').textContent=this.streak;setTimeout(()=>{this.nextQuestion()},2000)}nextQuestion(){this.currentQuestion++;if(this.currentQuestion<this.quizData.length){this.showQuestion()}else{this.endQuiz()}}skipQuestion(){if(this.isAnswered)return;this.isAnswered=true;clearInterval(this.timerInterval);this.streak=0;const correctAnswer=decodeHTML(this.quizData[this.currentQuestion].correct_answer);showAlert(`⏭️ Skipped! Answer: ${correctAnswer}`,"info");setTimeout(()=>{this.nextQuestion()},2000)}endQuiz(){clearInterval(this.timerInterval);const accuracy=Math.round((this.correctAnswers/this.quizData.length)*100);const avgTime=this.totalTimeSpent/this.quizData.length;const pointsEarned=this.score*100+(this.maxStreak*50);const quizResult={score:this.score,totalQuestions:this.quizData.length,accuracy:accuracy,avgTime:avgTime.toFixed(1),points:pointsEarned,category:document.getElementById("category").selectedOptions[0]?.text||'Mixed',difficulty:document.getElementById("difficulty").value||'mixed'};storage.addQuizResult(quizResult);storage.saveStats(pointsEarned,pointsEarned,this.maxStreak);document.getElementById("quiz").style.display="none";document.getElementById("result").style.display="block";document.getElementById("result-title").textContent=accuracy>=80?"Outstanding!":accuracy>=60?"Well Done!":"Keep Learning!";document.getElementById("result-score").textContent=`You scored ${this.score} out of ${this.quizData.length} questions correctly`;document.getElementById("accuracy-display").textContent=accuracy+"%";document.getElementById("avg-time-display").textContent=avgTime.toFixed(1)+"s";document.getElementById("points-earned").textContent=pointsEarned;this.loadStats()}restartQuiz(){document.getElementById("result").style.display="none";document.getElementById("settings").style.display="block";this.loadStats()}newQuiz(){location.reload()}}
+function decodeHTML(html){const txt=document.createElement("textarea");txt.innerHTML=html;return txt.value}
+function showAlert(message,type="info"){const alertDiv=document.createElement('div');alertDiv.className=`alert alert-${type==='error'?'danger':type} alert-dismissible fade show position-fixed`;alertDiv.style.cssText='top:20px;right:20px;z-index:9999;max-width:300px;';alertDiv.innerHTML=`${message}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>`;document.body.appendChild(alertDiv);setTimeout(()=>{if(alertDiv.parentNode)alertDiv.remove()},3000)}
+function startQuiz(){app.startQuiz()}
+function skipQuestion(){app.skipQuestion()}
+function restartQuiz(){app.restartQuiz()}
+function newQuiz(){app.newQuiz()}
+function showSection(sectionId){app.showSection(sectionId)}
+const storage=new StorageManager();
+const api=new APIManager();
+const dashboard=new DashboardManager();
+const questionManager=new QuestionManager();
+document.addEventListener('DOMContentLoaded',function(){window.app=new QuizApp();app.init()});
+</script>
 </body>
 </html>
-
 
